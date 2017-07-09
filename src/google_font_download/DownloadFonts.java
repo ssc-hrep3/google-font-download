@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 public class DownloadFonts {
 
 	public static void main(String[] args) {
-		String path = "https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic";
-		String userAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36";
+		String path = "https://fonts.googleapis.com/css?family=Roboto+Mono:300,400|Roboto:300,400,400i,500";
+		String userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 		String outputDir = "fonts";
 		process(path, userAgent, outputDir);
 	}
@@ -38,12 +38,13 @@ public class DownloadFonts {
 			InputStreamReader inputStreamReader = new InputStreamReader(bufferedInputStream);
 			BufferedReader in = new BufferedReader(inputStreamReader);
 
-			String inputLine;
 			PrintWriter out = new PrintWriter(outputDir + "/" + "fonts.css");
+			String patternString = "^(\\s*?src:.*?url\\()(.*?)(\\).*;)$";
+			Pattern pattern = Pattern.compile(patternString);
+
+			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
-				String patternString = "^(\\s*?src:.*?url\\()(.*?)(\\).*;)$";
 				if (inputLine.matches(patternString)) {
-					Pattern pattern = Pattern.compile(patternString);
 					Matcher matcher = pattern.matcher(inputLine);
 					while (matcher.find()) {
 						String googleUrl = matcher.group(2);
@@ -64,6 +65,7 @@ public class DownloadFonts {
 
 			for (String filename : fontUrls.keySet()) {
 				URL website = new URL(fontUrls.get(filename));
+				System.out.println("Downloading Font " + website);
 				try (InputStream fileInputStream = website.openStream()) {
 					Files.copy(fileInputStream, Paths.get(outputDir + "/" + filename), REPLACE_EXISTING);
 				}
