@@ -30,7 +30,7 @@ public class DownloadFonts {
 		try {
 			Map<String, String> fontUrls = new HashMap<>();
 
-			System.out.println("Downloading all font from "+ path + "\n");
+			System.out.println("Downloading all font from " + path + "\n");
 			URL url = new URL(path);
 			URLConnection urlConnection = url.openConnection();
 			urlConnection.setRequestProperty("user-agent", userAgent);
