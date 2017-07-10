@@ -1,4 +1,4 @@
-package google_font_download;
+package io.schrepfer.googlefontdownload;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
