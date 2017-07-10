@@ -30,6 +30,7 @@ public class DownloadFonts {
 		try {
 			Map<String, String> fontUrls = new HashMap<>();
 
+			System.out.println("Downloading all font from "+ path + "\n");
 			URL url = new URL(path);
 			URLConnection urlConnection = url.openConnection();
 			urlConnection.setRequestProperty("user-agent", userAgent);
@@ -47,10 +48,10 @@ public class DownloadFonts {
 				if (inputLine.matches(patternString)) {
 					Matcher matcher = pattern.matcher(inputLine);
 					while (matcher.find()) {
-						String googleUrl = matcher.group(2);
-						String[] splittedGoogleUrl = googleUrl.split("/");
-						String filename = splittedGoogleUrl[splittedGoogleUrl.length - 1];
-						fontUrls.put(filename, googleUrl);
+						String fontUrl = matcher.group(2);
+						String[] splittedFontUrl = fontUrl.split("/");
+						String filename = splittedFontUrl[splittedFontUrl.length - 1];
+						fontUrls.put(filename, fontUrl);
 
 						out.print(matcher.group(1));
 						out.print("'" + filename + "'");
@@ -63,15 +64,18 @@ public class DownloadFonts {
 			in.close();
 			out.close();
 
-			for (String filename : fontUrls.keySet()) {
-				URL website = new URL(fontUrls.get(filename));
-				System.out.println("Downloading Font " + website);
-				try (InputStream fileInputStream = website.openStream()) {
+			for (Map.Entry<String, String> font : fontUrls.entrySet()) {
+				String filename = font.getKey();
+				URL fontUrl = new URL(font.getValue());
+
+				System.out.println("Downloading Font URL: " + fontUrl);
+				try (InputStream fileInputStream = fontUrl.openStream()) {
 					Files.copy(fileInputStream, Paths.get(outputDir + "/" + filename), REPLACE_EXISTING);
 				}
 			}
 
 		} catch (IOException e) {
+			System.err.println("An error occurred.");
 			e.printStackTrace();
 		}
 	}
